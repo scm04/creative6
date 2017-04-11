@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>Memes and Jokes</title>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+  <link href="stylesheets/style.css" rel="stylesheet">
+  <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
+  <script src="javascripts/memesandjokes.js"></script>
+ </head>
+ <body ng-app="post" ng-controller="MainCtrl">
+  <div class="page-header">
+   <h1>Memes and Jokes</h1>
+  </div>
+  <form ng-submit="addPost()" style="margin-top30px;">
+   <span style="color: white;">Meme URL: <input type="text" ng-model="meme" value='' placeholder="Enter meme URL (optional)" style="width:359px;color:black;"></input></span><br>
+   <span style="color: white;">Joke: <input type="text" ng-model="joke" placeholder="Enter a joke (optional)" style="width:400px;color:black;"></input></span><br>
+   <button type="submit">Add Post</button>
+  </form>
+  <div style="margin-bottom:20px;" ng-repeat="post in posts | orderBy: '-upvotes'">
+   <ul class="list center stretch"><li>
+    <span style="font-size:100px;"></span><br>
+    <span class="thumbsUp" ng-click="incrementUpvotes(post)"><i class="fa fa-heart-o fa-5x" aria-hidden="true"></i><i class="fa fa-heart fa-5x" aria-hidden="true"></i></span>
+    <span style="margin-left:100px; margin-right:100px;"><img class='avatar' height="250px" src="{{post.meme}}"/></span>
+    <span class="thumbsUp" ng-click="delete(post)"><i class="fa fa-times-circle-o fa-5x" aria-hidden="true"></i><i class="fa fa-times-circle fa-5x" aria-hidden="true"></i></span><br>
+    <span style="font-size:100px;color:rgba(0,0,0,0.6);text-shadow:2px 2px 3px rgba(255,255,255,0.1);">VOTES: {{post.upvotes}}</span>
+   </li></ul>
+  </div>
+ </body>
+</html>
