@@ -1,20 +1,20 @@
 angular.module('post',[])
- .controller('MainCtrl', [
-  '$scope','$http',
-  function($scope,$http){
+ .controller('postCtrl', postCtrl);
+
+  function postCtrl($scope,$http){
     $scope.posts=[];
     $scope.addPost = function(){
-     if($scope.meme === '' && $scope.joke === ''){
-      alert("Please enter a meme URL or a joke");
+    console.log("$scope.meme's value: "+$scope.meme);
+     if($scope.meme === ''){
+      console.log("Meme URL is blank");
+      alert("Please enter a meme URL");
       return;
      }
      $scope.create({
       meme: $scope.meme,
-      joke: $scope.joke,
       upvotes: 0
      });
      $scope.meme = '';
-     $scope.joke = '';
     };
 
     $scope.incrementUpvotes=function(post){
@@ -47,4 +47,4 @@ angular.module('post',[])
     };
     $scope.getAll();
   }
-]);
+

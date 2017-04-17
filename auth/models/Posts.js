@@ -2,7 +2,6 @@ var mongoose = require('mongoose');
 
 var PostSchema = new mongoose.Schema({
   meme: String,
-  joke: String,
   upvotes: {type: Number, default: 0}
 });
 
