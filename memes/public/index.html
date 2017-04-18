@@ -7,21 +7,84 @@
   <link href="stylesheets/style.css" rel="stylesheet">
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular.min.js"></script>
   <script src="javascripts/memes.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/3.7.8/firebase.js"></script>
+  <script>
+    // Initialize Firebase
+    var config = {
+      apiKey: "AIzaSyAStNJQ987KI2IvRIQ2IfBAnimP1KjfJco",
+      authDomain: "meme-votes.firebaseapp.com",
+      databaseURL: "https://meme-votes.firebaseio.com",
+      projectId: "meme-votes",
+      storageBucket: "meme-votes.appspot.com",
+      messagingSenderId: "215204934605"
+    };
+    firebase.initializeApp(config);
+  </script>
+<script>
+  function deleteUser(){
+    var user=firebase.auth().currentUser;
+    user.delete().then(function(){
+      alert("Account deleted.");
+    }, function(error){
+      alert("An error occurred: "+error.code);
+    });
+  }
+</script>
+<script>
+function initApp() {
+      // Listening for auth state changes.
+      // [START authstatelistener]
+      firebase.auth().onAuthStateChanged(function(user) {
+        var form = document.getElementById('postForm');
+        var deleteButton = document.getElementById('deleteButton');
+        var deleteUser = document.getElementById('deleteUser');
+        var login = document.getElementById('login');
+        var username = document.getElementById('username');
+        if (user) {
+          // User is signed in.
+          form.style.display = "";
+          deleteUser.style.display = "";
+          login.text = "Logout";
+          var email = user.email;
+          var user = 'default';
+          if(email.indexOf('@') != -1){
+            user = email.substring(0,email.indexOf('@'));
+          }
+          username.innerHTML = "Logged in as " + user;
+        } else {
+          // User is signed out.
+          form.style.display = "none";
+          deleteUser.style.display = "none";
+          login.text = "Login";
+          username.innerHTML = "";
+        }
+      });
+}
+window.onload = function() {
+  initApp();
+};
+</script>
  </head>
  <body ng-app="post" ng-controller="MainCtrl">
+  <div id="username" style="color:white;margin-bottom:10px;"></div><br>
+  <div>
+   <a id="login" class="btn btn-success" href="./login.html">Login</a>
+   <button class="btn btn-warning" id="deleteUser" onclick="deleteUser()">Delete Account</button>
+  </div>
   <div class="page-header">
    <h1>Meme Votes</h1>
   </div>
-  <form ng-submit="addPost()" style="margin-top30px;">
+  <form id="postForm" ng-submit="addPost()" style="margin-top30px;">
    <span style="color: white;">Meme URL: <input type="text" ng-model="meme" ng-init="meme=''" placeholder="Enter meme URL (optional)" style="width:359px;color:black;"></input></span><br>
-   <button type="submit">Add Post</button>
+   <button class="btn btn-success" style="margin-top:5px" type="submit">Add Post</button>
   </form>
-  <div style="margin-bottom:20px;" ng-repeat="post in posts | orderBy: '-upvotes'">
+  <div style="margin-bottom:20px;" ng-repeat="post in posts | orderBy: ['-upvotes','poster']">
    <ul class="list center stretch"><li>
-    <span style="font-size:100px;"></span><br>
+    <span style="font-size:60px;"></span><br>
+    <span id="poster" style="font-size:40px;color:rgba(0,0,0,0.6);">Posted by: {{post.poster}}</span><br>
     <span class="thumbsUp" ng-click="incrementUpvotes(post)"><i class="fa fa-heart-o fa-5x" aria-hidden="true"></i><i class="fa fa-heart fa-5x" aria-hidden="true"></i></span>
     <span style="margin-left:100px; margin-right:100px;"><img class='avatar' height="250px" ng-src="{{post.meme}}"/></span>
-    <span class="thumbsUp" ng-click="delete(post)"><i class="fa fa-times-circle-o fa-5x" aria-hidden="true"></i><i class="fa fa-times-circle fa-5x" aria-hidden="true"></i></span><br>
+    <span id="deleteButton" ng-show="checkUser($index)" class="thumbsUp" ng-click="delete(post)"><i class="fa fa-times-circle-o fa-5x" aria-hidden="true"></i><i class="fa fa-times-circle fa-5x" aria-hidden="true"></i></span><br>
     <span style="font-size:100px;color:rgba(0,0,0,0.6);text-shadow:2px 2px 3px rgba(255,255,255,0.1);">VOTES: {{post.upvotes}}</span>
    </li></ul>
   </div>
